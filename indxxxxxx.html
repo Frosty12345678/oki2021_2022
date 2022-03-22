@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+ 
+<head>
+</head>
+ 
+ 
+ 
+<body>
+ 
+<h1>Edytor graficzny SUPEREDIT v1.9 by CodeMaster</h1>    
+ 
+<canvas id="plansza_canvas" width="1900px" height="800px">
+</canvas>
+<div>
+<fieldset style="width: 370px;">
+    <legend>Pedzel</legend>
+    <label>Wielkosc:</label>
+    <input type="number" id="pole_wielkosc_pedzla" min="1" max="200">
+    <label style="margin-left: 20px;">Kolor:</label>
+    <input type="color" id="pole_kolor_pedzla">
+</fieldset>
+</div>
+<div style="margin-top: 20px;">
+    <button onclick="CzyscPlansze()">
+    Czysc!
+    </button>
+    <button onclick="UstawieniaPoczatkoweEdytora()" style="margin-left: 20px;">
+    Do poczatku!
+    </button>
+    <button onclick="ZapiszObraz()" style="margin-left: 20px;">
+        Zapisz jako
+     </button>
+     <input type="text" id="pole_nazwa_pliku" size="10">
+</div>
+ 
+ 
+<script>
+let plansza, rysowanie;
+plansza = document.getElementById("plansza_canvas");
+rysowanie = plansza.getContext("2d");  
+ 
+function RysujPunkt(x, y, promien, kolor) {
+   x = x - plansza.offsetLeft;
+   y = y - plansza.offsetTop;
+   rysowanie.beginPath();   
+   rysowanie.fillStyle = kolor;
+   rysowanie.arc(x, y, promien, 0, 2*Math.PI);
+   rysowanie.fill();   
+   rysowanie.closePath();
+}
+function MyszNacisnieta(zdarzenie) {
+   RysujPunkt(zdarzenie.pageX, zdarzenie.pageY, wielkosc_pedzla, kolor_pedzla);
+   czy_mysz_wcisnieta = true;
+}        
+function MyszPodniesiona(zdarzenie) {
+   czy_mysz_wcisnieta = false;
+}                   
+function RuchMyszy(zdarzenie) {
+   if (czy_mysz_wcisnieta == true)
+       RysujPunkt(zdarzenie.pageX, zdarzenie.pageY, wielkosc_pedzla, kolor_pedzla);
+}
+function CzyscPlansze() {
+   rysowanie.fillStyle = "#FFFF00";
+   rysowanie.fillRect(0,0,plansza.width, plansza.height);
+}
+function ZmianaWielkosciPedzla(zdarzenie) {
+   wielkosc_pedzla = document.getElementById("pole_wielkosc_pedzla").value;
+}
+function ZmianaKoloruPedzla(zdarzenie) {
+   kolor_pedzla = document.getElementById("pole_kolor_pedzla").value;
+}
+function UstawieniaPoczatkoweEdytora() {
+   CzyscPlansze();    
+   wielkosc_pedzla = 10;
+   document.getElementById("pole_wielkosc_pedzla").value = wielkosc_pedzla;
+   kolor_pedzla = "#FF0000";
+   document.getElementById("pole_kolor_pedzla").value = kolor_pedzla;
+   document.getElementById("pole_nazwa_pliku").value = "moje_dzielo"; 
+   czy_mysz_wcisnieta = false;
+}
+function ZapiszObraz(){
+  let obraz, link;
+  obraz = plansza.toDataURL();
+  link = document.createElement('a');
+  link.download = document.getElementById("pole_nazwa_pliku").value;
+  link.href = obraz;
+  link.click();
+}
+ 
+plansza.addEventListener('mousemove', RuchMyszy);
+document.addEventListener('mousedown', MyszNacisnieta);
+document.addEventListener('mouseup', MyszPodniesiona);
+pole_wielkosc_pedzla.addEventListener('change', ZmianaWielkosciPedzla);
+pole_kolor_pedzla.addEventListener('change', ZmianaKoloruPedzla);
+ 
+let czy_mysz_wcisnieta, wielkosc_pedzla, kolor_pedzla;
+ 
+UstawieniaPoczatkoweEdytora();
+ 
+</script>
+</body> 
+ 
+ 
+</html>
+ 
